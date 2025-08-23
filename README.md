@@ -2,9 +2,8 @@
 
 ---
 
-### 🔧 1) 가상환경 & 설치
-
 ```bash
+### 🔧 1) 가상환경 & 설치
 conda create -n emotion-effnet python=3.10 -y
 conda activate emotion-effnet
 pip install -r requirements.txt
