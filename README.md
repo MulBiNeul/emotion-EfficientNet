@@ -1,4 +1,4 @@
-# 🚀 실행 방법 (Usage Guide)
+## 🚀 실행 방법 (Usage Guide)
 
 ---
 
@@ -63,11 +63,11 @@ python -m src.utils.train --cfg configs/default.yaml \
 
 ---
 
-# 📂 Source Code Overview (`src/`)
+## 📂 Source Code Overview (`src/`)
 
 ---
 
-## 🗂 datasets
+### 🗂 datasets
 
 ### `datasets/emotion_dataset.py`
 
@@ -93,7 +93,7 @@ python -m src.utils.train --cfg configs/default.yaml \
 
 ---
 
-## 🗂 losses
+### 🗂 losses
 
 ### `losses/focal.py`
 
@@ -114,7 +114,7 @@ python -m src.utils.train --cfg configs/default.yaml \
 
 ---
 
-## 🗂 models
+### 🗂 models
 
 ### `models/efficientnet.py`
 
@@ -125,7 +125,7 @@ python -m src.utils.train --cfg configs/default.yaml \
 
 ---
 
-## 🗂 utils
+### 🗂 utils
 
 ### `utils/common.py`
 
