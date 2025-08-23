@@ -1,3 +1,68 @@
+# 🚀 실행 방법 (Usage Guide)
+
+---
+
+### 🔧 1) 가상환경 & 설치
+
+```bash
+conda create -n emotion-effnet python=3.10 -y
+conda activate emotion-effnet
+pip install -r requirements.txt
+
+# 환경별 PyTorch 설치 권장
+# CUDA 12.1:
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+# CPU 전용:
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+
+# macOS (MPS):
+pip install torch torchvision torchaudio
+
+### 📂 2) 데이터 배치
+data/train|val|test/ 하위에 7개 클래스 폴더 생성
+anger, disgust, fear, happy, neutral, panic, sadness
+
+예시:
+data/train/happy/*.jpg
+data/val/sadness/*.png
+
+### 🏋️ 3) 학습
+python -m src.utils.train --cfg configs/default.yaml
+
+### 📊 4) 평가
+python -m src.utils.evaluate --cfg configs/default.yaml --split val --plot
+python -m src.utils.evaluate --cfg configs/default.yaml --split test --plot
+
+### 🔍 5) 추론
+python -m src.utils.test --cfg configs/default.yaml --input path/to/image_or_dir
+
+### 📤 6) 내보내기 (TorchScript / CoreML)
+# TorchScript
+python -m src.utils.export_torchscript --cfg configs/default.yaml \
+    --out exports/torchscript/efficientnet_b0_ts_v1.pt
+
+# CoreML (macOS 권장, FP16 권장)
+python -m src.utils.export_coreml --cfg configs/default.yaml --fp16 \
+    --out exports/coreml/EmotionClassifier_v1.mlmodel
+
+### ⚙️ 7) 옵션 (CLI 덮어쓰기 예시)
+# 날짜 기반 run_dir
+python -m src.utils.train --cfg configs/default.yaml \
+    --run_dir runs/$(date +%F)_effb0_cb-focal_bs128_ep35
+
+# Loss 변경
+python -m src.utils.train --cfg configs/default.yaml \
+    --loss cb_focal --run_dir runs/effb0_cb-focal_try
+
+# 이미지 크기, 러닝레이트, 배치사이즈, epoch 변경
+python -m src.utils.train --cfg configs/default.yaml \
+    --img_size 256 --lr 4e-4 --batch_size 96 --epochs 30 \
+    --run_dir runs/effb0_sz256_lr4e4_bs96_ep30
+```
+
+---
+
 # 📂 Source Code Overview (`src/`)
 
 ---
@@ -6,11 +71,11 @@
 
 ### `datasets/emotion_dataset.py`
 
-- **`build_transforms(img_size=224)`**  
+- **`build_transforms(img_size=224)`**
   학습/평가용 전처리(transform) 정의 (Resize, Flip·ColorJitter, ToTensor, Normalize).
-- **`build_datasets(data_root, img_size)`**  
+- **`build_datasets(data_root, img_size)`**
   `ImageFolder`로 `train/val(/test)` 데이터셋 생성.
-- **`build_loaders(data_root, img_size, batch_size, num_workers=8, drop_last=True)`**  
+- **`build_loaders(data_root, img_size, batch_size, num_workers=8, drop_last=True)`**
   위 데이터셋으로 DataLoader 3종(train/val/test) 반환.
 
 ---
@@ -19,11 +84,11 @@
 
 ### `engine/trainer.py`
 
-- **`_amp_ctx_and_scaler(device, enabled)`**  
+- **`_amp_ctx_and_scaler(device, enabled)`**
   AMP 지원 시 `autocast`, `GradScaler` 반환.
-- **`evaluate(model, loader, device)`**  
+- **`evaluate(model, loader, device)`**
   모델 평가 → `macro-F1`와 `(y_true, y_pred)` 반환.
-- **`train_one_epoch(...)`**  
+- **`train_one_epoch(...)`**
   1 epoch 학습. AMP/스케줄러 지원. 평균 loss 반환.
 
 ---
@@ -32,15 +97,15 @@
 
 ### `losses/focal.py`
 
-- **`FocalLoss`**  
-  CrossEntropy 기반 focal loss.  
+- **`FocalLoss`**
+  CrossEntropy 기반 focal loss.
   `loss = ((1 - pt)^γ) * CE`
 
 ### `losses/cb_focal.py`
 
-- **`ClassBalancedFocal`**  
+- **`ClassBalancedFocal`**
   클래스 분포 기반 가중치 적용 후 focal loss.
-- **`LogitAdjustedCE`**  
+- **`LogitAdjustedCE`**
   클래스 priors 기반으로 로짓 보정한 CE loss.
 
 ### `losses/__init__.py`
@@ -53,9 +118,9 @@
 
 ### `models/efficientnet.py`
 
-- **`build_efficientnet_b0(num_classes, pretrained)`**  
+- **`build_efficientnet_b0(num_classes, pretrained)`**
   EfficientNet-B0 불러와 classifier를 `Linear(num_classes)`로 교체.
-- **`build_model(name, num_classes, pretrained)`**  
+- **`build_model(name, num_classes, pretrained)`**
   현재 `"efficientnet_b0"`만 지원.
 
 ---
@@ -79,7 +144,7 @@
 ### `utils/inference.py`
 
 - **`build_infer_tf(img_size)`** : 추론용 전처리 생성.
-- **`predict_image(model, img_path, device, tf, class_names)`** :  
+- **`predict_image(model, img_path, device, tf, class_names)`** :
   단일 이미지 추론 → `(pred_label, confidence, prob_dist)` 반환.
 
 ### `utils/metrics.py`
@@ -103,7 +168,7 @@
 
 ### `utils/sampler.py`
 
-- **`make_class_aware_sampler(samples)`**  
+- **`make_class_aware_sampler(samples)`**
   클래스 불균형 대응 `WeightedRandomSampler` + 클래스 개수 반환.
 
 ### `utils/test.py`
@@ -123,7 +188,7 @@
 
 ⸻
 
-📊 Workflow Diagram
+### 📊 Workflow Diagram
 
 ```mermaid
 flowchart TD
