@@ -1,0 +1,2 @@
+path,pred,conf,p_anger,p_disgust,p_fear,p_happy,p_neutral,p_panic,p_sadness
+test_img/lee_3.jpg,panic,0.861438,0.137420,0.000036,0.000003,0.000003,0.000001,0.861438,0.001098
