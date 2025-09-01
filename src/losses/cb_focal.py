@@ -14,7 +14,6 @@ class ClassBalancedFocal(nn.Module):
         self.reduction = reduction
 
     def forward(self, logits: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
-        # aafety
         weight = self.weight
         if weight.device != logits.device:
             weight = weight.to(logits.device)
@@ -36,7 +35,6 @@ class LogitAdjustedCE(nn.Module):
         self.reduction = reduction
 
     def forward(self, logits: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
-        # safety
         adj = self.adj
         if adj.device != logits.device:
             adj = adj.to(logits.device)
