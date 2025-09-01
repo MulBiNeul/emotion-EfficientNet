@@ -55,7 +55,6 @@ def main():
     args = parse_args()
     cfg = load_cfg(args.cfg)
 
-    # CLI 덮어쓰기 반영
     cfg = override_cfg(
         cfg,
         model_name=args.model,
@@ -80,7 +79,7 @@ def main():
     train_loader = DataLoader(
         train_set,
         batch_size=cfg.train.batch_size,
-        shuffle=True,                         # 필요 시 sampler로 교체 가능
+        shuffle=True,
         num_workers=cfg.train.num_workers,
         pin_memory=True,
     )
@@ -101,7 +100,6 @@ def main():
         for p in model.features.parameters():
             p.requires_grad = False
 
-    # 옵티마/스케줄러/로스
     optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.train.lr, weight_decay=cfg.train.weight_decay)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=cfg.train.epochs)
     criterion = build_loss(cfg, train_set).to(device)
@@ -118,7 +116,7 @@ def main():
     # 기록용
     history = {"train_loss": [], "val_macroF1": []}
 
-    # 학습 루프 (에폭 기준 tqdm, 이터 출력 없음)
+    # 학습 루프
     t0 = time.time()
     for e in tqdm(range(1, cfg.train.epochs + 1), desc="Epochs", total=cfg.train.epochs):
         tr_loss = train_one_epoch(
@@ -130,13 +128,13 @@ def main():
         history["train_loss"].append(float(tr_loss))
         history["val_macroF1"].append(float(val_macro))
 
-        # 리포트/혼동행렬 저장 (매 에폭 갱신)
+        # 리포트/혼동행렬 저장
         rep_txt, cm = full_report(y_t, y_p, class_names)
         with open(os.path.join(run_dir, "val_report.txt"), "w") as f:
             f.write(rep_txt)
         np.save(os.path.join(run_dir, "val_cm.npy"), cm)
 
-        # 최고 성능 체크포인트 저장
+        # 체크포인트 저장
         if val_macro > best_metric:
             best_metric = val_macro
             torch.save(
