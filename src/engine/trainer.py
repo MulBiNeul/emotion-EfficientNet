@@ -21,7 +21,6 @@ def evaluate(model, loader, device):
     return f1_score(y_true, y_pred, average="macro"), (y_true, y_pred)
 
 def train_one_epoch(model, loader, optimizer, device, criterion, amp_enabled, log_interval=None, scheduler=None):
-    """iter 단위 출력 없음(요청사항)."""
     model.train()
     ctx, scaler = _amp_ctx_and_scaler(device, amp_enabled)
     running = 0.0
