@@ -8,7 +8,6 @@ def build_efficientnet_b0(num_classes=7, pretrained=True):
     m.classifier[1] = nn.Linear(in_f, num_classes)
     return m
 
-# 전역 빌더(향후 b1/b2 추가 대비)
 def build_model(name, num_classes, pretrained=True):
     if name in (None, "", "efficientnet_b0"):
         return build_efficientnet_b0(num_classes, pretrained)
