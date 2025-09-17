@@ -1,9 +1,9 @@
-## 🚀 실행 방법 (Usage Guide)
+## 실행 방법
 
 ---
 
 ```bash
-### 🔧 1) 가상환경 & 설치
+### 1) 가상환경 & 설치
 conda create -n emotion-effnet python=3.10 -y
 conda activate emotion-effnet
 pip install -r requirements.txt
@@ -18,7 +18,7 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 # macOS (MPS):
 pip install torch torchvision torchaudio
 
-### 📂 2) 데이터 배치
+### 2) 데이터 배치
 data/train|val|test/ 하위에 7개 클래스 폴더 생성
 anger, disgust, fear, happy, neutral, panic, sadness
 
@@ -26,17 +26,17 @@ anger, disgust, fear, happy, neutral, panic, sadness
 data/train/happy/*.jpg
 data/val/sadness/*.png
 
-### 🏋️ 3) 학습
+### 3) 학습
 python -m src.utils.train --cfg configs/default.yaml
 
-### 📊 4) 평가
+### 4) 평가
 python -m src.utils.evaluate --cfg configs/default.yaml --split val --plot
 python -m src.utils.evaluate --cfg configs/default.yaml --split test --plot
 
-### 🔍 5) 추론
+### 5) 추론
 python -m src.utils.test --cfg configs/default.yaml --input path/to/image_or_dir
 
-### 📤 6) 내보내기 (TorchScript / CoreML)
+### 6) 내보내기 (TorchScript / CoreML)
 # TorchScript
 python -m src.utils.export_torchscript --cfg configs/default.yaml \
     --out exports/torchscript/efficientnet_b0_ts_v1.pt
@@ -45,7 +45,7 @@ python -m src.utils.export_torchscript --cfg configs/default.yaml \
 python -m src.utils.export_coreml --cfg configs/default.yaml --fp16 \
     --out exports/coreml/EmotionClassifier_v1.mlmodel
 
-### ⚙️ 7) 옵션 (CLI 덮어쓰기 예시)
+### 7) 옵션 (CLI 덮어쓰기 예시)
 # 날짜 기반 run_dir
 python -m src.utils.train --cfg configs/default.yaml \
     --run_dir runs/$(date +%F)_effb0_cb-focal_bs128_ep35
@@ -62,11 +62,11 @@ python -m src.utils.train --cfg configs/default.yaml \
 
 ---
 
-## 📂 Source Code Overview (`src/`)
+## Source Code Overview (`src/`)
 
 ---
 
-### 🗂 datasets
+### datasets
 
 ### `datasets/emotion_dataset.py`
 
@@ -79,7 +79,7 @@ python -m src.utils.train --cfg configs/default.yaml \
 
 ---
 
-## 🗂 engine
+## engine
 
 ### `engine/trainer.py`
 
@@ -92,7 +92,7 @@ python -m src.utils.train --cfg configs/default.yaml \
 
 ---
 
-### 🗂 losses
+### losses
 
 ### `losses/focal.py`
 
@@ -113,7 +113,7 @@ python -m src.utils.train --cfg configs/default.yaml \
 
 ---
 
-### 🗂 models
+### models
 
 ### `models/efficientnet.py`
 
@@ -124,7 +124,7 @@ python -m src.utils.train --cfg configs/default.yaml \
 
 ---
 
-### 🗂 utils
+### utils
 
 ### `utils/common.py`
 
@@ -187,7 +187,7 @@ python -m src.utils.train --cfg configs/default.yaml \
 
 ⸻
 
-### 📊 Workflow Diagram
+### Workflow Diagram
 
 ```mermaid
 flowchart TD
