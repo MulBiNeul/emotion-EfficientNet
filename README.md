@@ -41,11 +41,11 @@ python -m src.utils.test --cfg configs/default.yaml --input path/to/image_or_dir
 python -m src.utils.export_torchscript --cfg configs/default.yaml \
     --out exports/torchscript/efficientnet_b0_ts_v1.pt
 
-# CoreML (macOS 권장, FP16 권장)
+# CoreML
 python -m src.utils.export_coreml --cfg configs/default.yaml --fp16 \
     --out exports/coreml/EmotionClassifier_v1.mlmodel
 
-### 7) 옵션 (CLI 덮어쓰기 예시)
+### 7) 옵션
 # 날짜 기반 run_dir
 python -m src.utils.train --cfg configs/default.yaml \
     --run_dir runs/$(date +%F)_effb0_cb-focal_bs128_ep35
@@ -54,7 +54,7 @@ python -m src.utils.train --cfg configs/default.yaml \
 python -m src.utils.train --cfg configs/default.yaml \
     --loss cb_focal --run_dir runs/effb0_cb-focal_try
 
-# 이미지 크기, 러닝레이트, 배치사이즈, epoch 변경
+# img size, learning rate, batch size, epoch 변경
 python -m src.utils.train --cfg configs/default.yaml \
     --img_size 256 --lr 4e-4 --batch_size 96 --epochs 30 \
     --run_dir runs/effb0_sz256_lr4e4_bs96_ep30
