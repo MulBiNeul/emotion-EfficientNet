@@ -41,3 +41,4 @@ class LogitAdjustedCE(nn.Module):
 
         logits = logits - adj
         return F.cross_entropy(logits, target, reduction=self.reduction)
+    
